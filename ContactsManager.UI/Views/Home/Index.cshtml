@@ -1,0 +1,126 @@
+﻿
+@model IEnumerable<PersonReponse>
+
+@{
+ ViewBag.Title = "Persons";
+}
+<form asp-controller="Home" asp-action="Index" method="get">
+
+ <!-- breadcrumb starts -->
+ <div class="flex">
+  <div class="flex-1">
+   <div class="text-grey">
+    <span>Contacts</span>
+    <i class="fa-solid fa-caret-right"></i>
+    <span class="text-grey">Persons</span>
+   </div>
+  </div>
+
+  <div class="flex-1 text-right">
+   <a asp-controller="Home" asp-action="Create" class="button-link button-blue-back">Create Person</a>
+  </div>
+ </div>
+ <!-- breadcrumb endds -->
+
+ <div class="table-container">
+  <div class="flex">
+   <div class="flex-1">
+    <h1>Persons</h1>
+   </div>
+   <div class="flex-3 text-right">
+    <label>Search by:</label>
+
+    <select class="search-dropdown" name="searchBy" style="width: 200px">
+     @foreach (var field in ViewBag.SearchFields)
+     {
+      if (field.Key == ViewBag.CurrentSearchBy)
+      {
+       <option value="@field.Key" selected="selected">@field.Value</option>
+      }
+      else
+      {
+       <option value="@field.Key">@field.Value</option>
+      }
+
+     }
+     @* Eg: searchBy=PersonName&searchString=abc *@
+    </select>
+
+    <input type="search" id="Search" class="search-text" placeholder="Search" name="searchString" value="@ViewBag.CurrentSearchString" style="width:200px" />
+
+    <button class="search-button">Search</button>
+
+    <a asp-controller="Home" asp-action="Index" class="ml link-hover">Clear all</a>
+   </div>
+  </div>
+
+
+
+  <table class="table w-100 mt persons">
+
+   <thead>
+    <tr>
+     @await Html.PartialAsync("_ColumHeader", new ViewDataDictionary(ViewData) {
+     { "ColumnName", nameof(PersonReponse.PersonName) },
+     { "DisplayName", "Person Name" },
+     })
+
+     @await Html.PartialAsync("_ColumHeader", new ViewDataDictionary(ViewData) {
+     { "ColumnName", nameof(PersonReponse.Email) },
+     { "DisplayName", "Email" },
+     })
+
+     @await Html.PartialAsync("_ColumHeader", new ViewDataDictionary(ViewData) {
+     { "ColumnName", nameof(PersonReponse.DateOfBirth) },
+     { "DisplayName", "Date of Birth" },
+     })
+
+     @await Html.PartialAsync("_ColumHeader", new ViewDataDictionary(ViewData) {
+     { "ColumnName", nameof(PersonReponse.Age) },
+     { "DisplayName", "Age" },
+     })
+
+    <th> Gender</th>
+
+     <th> Country</th>
+
+     @await Html.PartialAsync("_ColumHeader", new ViewDataDictionary(ViewData) {
+     { "ColumnName", nameof(PersonReponse.Address) },
+     { "DisplayName", "Address" },
+     })
+
+     <th> Receive News Letter</th>
+
+     <th>Options</th>
+
+    </tr>
+   </thead>
+   <tbody>
+    @foreach (PersonReponse person in Model)
+    {
+     <tr>
+      <td style="width:10%">@person.PersonName</td>
+      <td style="width:20%">@person.Email</td>
+      <td style="width:10%">@person.DateOfBirth?.ToString("dd MMM yyyy")</td>
+      <td style="width:6%">@person.Age</td>
+      <td style="width:8%">@person.Gender</td>
+      <td style="width:10%">@person.Country</td>
+      <td style="width:15%">@person.Address</td>
+      <td style="width:8%">@person.ReceiveNewsLetters</td>
+      <td style="width:25%">
+                            <a asp-controller="Home" asp-action="Edit" asp-route-personID="@person.PersonID" style="text-decoration-line: none;" class="text-blue ">Edit </a> ||
+       @* /Persons/Edit/1 *@
+
+                            <a asp-controller="Home" asp-action="Delete" asp-route-personID="@person.PersonID" style="text-decoration-line: none; color: red" class="text-red">Delete</a>
+       @* /Persons/Delete/1 *@
+      </td>
+     </tr>
+    }
+   </tbody>
+
+  </table>
+
+
+ </div>
+
+</form>
