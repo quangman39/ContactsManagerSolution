@@ -28,14 +28,31 @@ else
     app.UseExceptionHandlingMiddleware();
 }
 
+app.UseHsts();
+app.UseHttpsRedirection();// using https 
 
 
 app.UseStaticFiles();
-app.UseRouting();
+app.UseRouting(); //Indetity action method based on rule
+app.UseAuthentication();// read Identity cookies 
+app.UseAuthorization();//add Authorization
+app.MapControllers();
 
-app.MapControllerRoute(
+
+#pragma warning disable ASP0014 // Suggest using top level route registrations
+app.UseEndpoints(endpoints =>
+{
+    endpoints.MapControllerRoute(
+      name: "areas",
+      pattern: "{area:exists}/{controller=Home}/{action=Index}/{id?}"
+    );
+    /*app.MapControllerRoute(
        name: "default",
-      pattern: "{controller=Home}/{action=Index}/{id?}");
+      pattern: "{controller=Home}/{action=Index}/{id?}")*/
+    ; //Execute the filter pineline (action + filter)
+});
+#pragma warning restore ASP0014 // Suggest using top level route registrations
+
 
 
 app.Run();

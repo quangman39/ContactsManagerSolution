@@ -2,6 +2,7 @@
 using CRUD.Filters.ActionFilters;
 using CRUD.Filters.ExceptionFilters;
 using CRUD.Filters.ResourceFilters;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Diagnostics;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
@@ -12,6 +13,8 @@ using ServiceContracts.IPersonsServices;
 namespace CRUD.Controllers
 {
     [TypeFilter<HanldeExceptionFilters>]
+    [Route("[controller]/[action]")]
+
     public class HomeController : Controller
     {
         private readonly IPersonsGetterService _personsGetterService;
@@ -36,6 +39,7 @@ namespace CRUD.Controllers
         [TypeFilter(typeof(PersonsListActionFilter))]
         [TypeFilter(typeof(ResponseHeaderActionFilter),
             Arguments = new object[] { "I-CustomkEy", "I-CustomValue" })]
+        [Route("/")]
         public async Task<IActionResult> Index(string searchBy, string? searchString, string sortBy = nameof(PersonReponse.PersonName),
             SortOrderOptions sortOrder = SortOrderOptions.ASC)
         {
@@ -118,6 +122,7 @@ namespace CRUD.Controllers
         }
 
         [Route("/Error")]
+        [AllowAnonymous]
         public IActionResult Error()
         {
             IExceptionHandlerPathFeature? exceptionHandlePath = HttpContext.Features.Get<IExceptionHandlerPathFeature>();
